@@ -6,6 +6,7 @@ using BookStoreAPI.Services.OrderService.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Newtonsoft.Json;
 
 namespace Test.Controller
 {
@@ -110,9 +111,12 @@ namespace Test.Controller
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            dynamic response = okResult.Value;
 
-            Assert.Equal("Order updated successfully.", (string)response.message);
+            // Ép kiểu rõ ràng từ anonymous object (dễ test hơn)
+            var json = JsonConvert.SerializeObject(okResult.Value);
+            var response = JsonConvert.DeserializeObject<MessageResponse>(json);
+
+            Assert.Equal("Order created successfully.", response.Message);
         }
         [Fact]
         public async Task Add_ThrowsArgumentException_WhenItemsAreEmpty()
@@ -211,6 +215,9 @@ namespace Test.Controller
             // Act & Assert
             await Assert.ThrowsAsync<KeyNotFoundException>(() => controller.Add(dto));
         }
-
+        public class MessageResponse
+        {
+            public string Message { get; set; }
+        }
     }
 }
