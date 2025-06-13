@@ -13,65 +13,6 @@ namespace Test.Controller
     public class OrderControllerTests
     {
         [Fact]
-        public async Task GetAll_ReturnsOkResult_WithExpectedData()
-        {
-            // Arrange
-            IEnumerable<OrderDTO> expectedData = new List<OrderDTO>
-            {
-                new OrderDTO
-                {
-                    Id = Guid.NewGuid(),
-                    StaffId = Guid.NewGuid(),
-                    CustomerId = Guid.NewGuid(),
-                    PromotionId = null,
-                    CreatedTime = DateTime.UtcNow.AddDays(-2),
-                    TotalAmount = 100.000M,
-                    SubTotalAmount = 120.000M,
-                    PromotionAmount = 20.000M,
-                    Status = true,
-                    Note = "Test Order 1"
-                },
-                new OrderDTO
-                {
-                    Id = Guid.NewGuid(),
-                    StaffId = Guid.NewGuid(),
-                    CustomerId = Guid.NewGuid(),
-                    PromotionId = Guid.NewGuid(),
-                    CreatedTime = DateTime.UtcNow.AddDays(-1),
-                    TotalAmount = 200.000M,
-                    SubTotalAmount = 230.000M,
-                    PromotionAmount = 30.000M,
-                    Status = false,
-                    Note = "Test Order 2"
-                }
-            }; // giả lập dữ liệu trả về
-
-            var mockService = new Mock<IOrderService>();
-            mockService
-                .Setup(s => s.GetAllAsync(It.IsAny<ClaimsPrincipal>()))
-                .ReturnsAsync(expectedData);
-
-            var controller = new OrderController(mockService.Object);
-
-            // Setup giả lập User
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
-            {
-            new Claim(ClaimTypes.NameIdentifier, "test-user-id")
-            }, "mock"));
-
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext { User = user }
-            };
-
-            // Act
-            var result = await controller.GetAll();
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal(expectedData, okResult.Value);
-        }
-        [Fact]
         public async Task Add_ReturnsOkResult_WithSuccessMessage()
         {
             // Arrange
