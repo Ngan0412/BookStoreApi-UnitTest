@@ -5,6 +5,8 @@ namespace BookStoreAPI.Services.BookService.Interfaces
     public interface IBookService
     {
         Task<IEnumerable<BookDetailDTO>> GetAllAsync();
+        Task<IEnumerable<BookDetailDTO>> GetPagedAsync(int pageNumber, int pageSize);
+
         Task<BookDTO?> GetByIdAsync(Guid id);
         Task<BookDTO?> GetByIsbnAsync(string isbn);
         Task<IEnumerable<BookDetailDTO>> SearchByKeywordAsync(string keyword);

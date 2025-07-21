@@ -15,13 +15,25 @@ namespace BookStoreAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetPaging(int pageNumber = 1, int pageSize = 10)
         {
-            var result = await _bookService.GetAllAsync();
-
+            var result = await _bookService.GetPagedAsync(pageNumber, pageSize);
             return Ok(result);
         }
 
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _bookService.GetAllAsync();
+            return Ok(result);
+        }
+        [HttpGet("GetByCategory")]
+        public async Task<IActionResult> GetByCategory(Guid categoryId)
+        {
+            var result = await _bookService.GetAllAsync();
+            var filteredBooks = result.Where(book => book.CategoryId == categoryId).ToList();
+            return Ok(filteredBooks);
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {

@@ -5,6 +5,7 @@ using BookStoreAPI.Services.BookService.Interfaces;
 using BookStoreAPI.Services.BookService.Repositories;
 using BookStoreAPI.Services.CategoryService.Repositories;
 using BookStoreAPI.Services.PublisherService.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace BookStoreAPI.Services.BookService
@@ -46,7 +47,34 @@ namespace BookStoreAPI.Services.BookService
                 IsDeleted = b.IsDeleted
             });
         }
+        public async Task<IEnumerable<BookDetailDTO>> GetPagedAsync(int pageNumber, int pageSize)
+        {
+            var allBooks = await _bookRepository.GetAllAsync();
+            var pagedBooks = allBooks
+                .Where(b => !b.IsDeleted)
+                .OrderBy(b => b.Title)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
+            return pagedBooks.Select(b => new BookDetailDTO
+            {
+                Id = b.Id,
+                Isbn = b.Isbn,
+                Title = b.Title,
+                CategoryName = b.Category.Name,
+                AuthorName = b.Author.Name,
+                PublisherName = b.Publisher.Name,
+                CategoryId = b.Category.Id,
+                AuthorId = b.Author.Id,
+                PublisherId = b.Publisher.Id,
+                YearOfPublication = b.YearOfPublication,
+                Price = b.Price,
+                Image = b.Image,
+                Quantity = b.Quantity,
+                IsDeleted = b.IsDeleted
+            });
+        }
         public async Task<BookDTO?> GetByIdAsync(Guid id)
         {
             var book = await _bookRepository.GetByIdAsync(id);

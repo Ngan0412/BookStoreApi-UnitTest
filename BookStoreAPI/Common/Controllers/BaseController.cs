@@ -5,7 +5,6 @@ namespace BookStoreAPI.Common.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public abstract class BaseController : ControllerBase
 {
 }
